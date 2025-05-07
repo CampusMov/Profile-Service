@@ -36,4 +36,14 @@ public class ProfileClassSchedulesController {
         var classSchedules = ClassSchedulesFromValueObjectListAssembler.toResources(profile.get().getAcademicInformation().getClassSchedules());
         return ResponseEntity.ok(classSchedules);
     }
+
+    @PostMapping
+    @Operation(summary = "Add a class schedule to a profile")
+    public ResponseEntity<ClassScheduleResource> addClassSchedule(@PathVariable String id, @RequestBody CreateClassScheduleResource createClassScheduleResource) {
+        var createClassScheduleCommand = CreateClassScheduleCommandFromResourceAssembler.toCommand(createClassScheduleResource);
+        var classSchedule = profileCommandService.handle(createClassScheduleCommand, id);
+        if (classSchedule.isEmpty()) return ResponseEntity.badRequest().build();
+        var classScheduleResourceResponse = ClassScheduleResourceFromEntityAssembler.toResource(classSchedule.get());
+        return ResponseEntity.status(HttpStatus.CREATED).body(classScheduleResourceResponse);
+    }
 }
