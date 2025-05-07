@@ -46,4 +46,14 @@ public class ProfileClassSchedulesController {
         var classScheduleResourceResponse = ClassScheduleResourceFromEntityAssembler.toResource(classSchedule.get());
         return ResponseEntity.status(HttpStatus.CREATED).body(classScheduleResourceResponse);
     }
+
+    @PutMapping("/{scheduleId}")
+    @Operation(summary = "Update a class schedule")
+    public ResponseEntity<ClassScheduleResource> updateClassSchedule(@PathVariable String id, @PathVariable String scheduleId, @RequestBody UpdateClassScheduleResource updateClassScheduleResource) {
+        var updateClassScheduleCommand = UpdateClassScheduleCommandFromResourceAssembler.toCommand(updateClassScheduleResource);
+        var classSchedule = profileCommandService.handle(updateClassScheduleCommand, id, String.valueOf(scheduleId));
+        if (classSchedule.isEmpty()) return ResponseEntity.badRequest().build();
+        var classScheduleResourceResponse = ClassScheduleResourceFromEntityAssembler.toResource(classSchedule.get());
+        return ResponseEntity.status(HttpStatus.OK).body(classScheduleResourceResponse);
+    }
 }
