@@ -116,4 +116,7 @@ public class Profile extends AbstractAggregateRoot<Profile> {
         return this.academicInformation.updateClassSchedule(classScheduleId, command);
     }
 
+    public boolean removeClassScheduleByClassScheduleId(String classScheduleId) {
+        return this.academicInformation.removeClassScheduleByClassScheduleId(classScheduleId);
+    }
 }
