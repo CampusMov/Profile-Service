@@ -4,11 +4,11 @@ import jakarta.persistence.*;
 
 @Embeddable
 public record UserId(
-        Long id
+        String id
 ) {
     public UserId {
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException("userId cannot be null or less than or equal to 0");
+        if (id == null || id.isBlank()) {
+            throw new IllegalArgumentException("UserId cannot be null or empty");
         }
     }
 }

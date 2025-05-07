@@ -1,5 +1,7 @@
 package com.campusmov.platform.profileservice.profile.domain.model.valueobjects;
 
+import com.campusmov.platform.profileservice.profile.domain.model.commands.CreateClassScheduleCommand;
+import com.campusmov.platform.profileservice.profile.domain.model.commands.UpdateClassScheduleCommand;
 import com.campusmov.platform.profileservice.profile.domain.model.entities.ClassSchedule;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -7,7 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Embeddable
 @Getter
@@ -28,7 +31,7 @@ public class AcademicInformation {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "profile_id", nullable = false)
-    private Collection<ClassSchedule> classSchedules = new ArrayList<>();
+    private List<ClassSchedule> classSchedules = new ArrayList<>();
 
     public AcademicInformation(String university, String faculty, String academicProgram, String semester) {
         if (university == null || university.isBlank()) {
@@ -53,10 +56,33 @@ public class AcademicInformation {
         //Constructor por defecto para JPA
     }
 
-    public void addClassSchedule(ClassSchedule classSchedule) {
-        if (classSchedule == null) {
-            throw new IllegalArgumentException("Class schedule cannot be null");
+    public void addClassSchedule(CreateClassScheduleCommand command) {
+        if (command == null) {
+            throw new IllegalArgumentException("Command cannot be null");
         }
+        ClassSchedule classSchedule = new ClassSchedule(command);
         this.classSchedules.add(classSchedule);
+    }
+
+    public Optional<ClassSchedule> updateClassSchedule(String classScheduleId, UpdateClassScheduleCommand command) {
+        if (classScheduleId == null || classScheduleId.isBlank()) {
+            throw new IllegalArgumentException("Class schedule ID cannot be null or blank");
+        }
+        if (command == null) {
+            throw new IllegalArgumentException("Command cannot be null");
+        }
+        for (ClassSchedule classSchedule : this.classSchedules) {
+            if (classSchedule.getId().equals(classScheduleId)) {
+                return classSchedule.updateClassScheduleInfo(command);
+            }
+        }
+        throw new IllegalArgumentException("Class schedule not found");
+    }
+
+    public boolean removeClassScheduleByClassScheduleId(String classScheduleId) {
+        if (classScheduleId == null || classScheduleId.isBlank()) {
+            throw new IllegalArgumentException("Class schedule ID cannot be null or blank");
+        }
+        return this.classSchedules.removeIf(classSchedule -> classSchedule.getId().equals(classScheduleId));
     }
 }
