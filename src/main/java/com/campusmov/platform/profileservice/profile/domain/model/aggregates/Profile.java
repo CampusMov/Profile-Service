@@ -1,5 +1,7 @@
 package com.campusmov.platform.profileservice.profile.domain.model.aggregates;
-import com.campusmov.platform.profileservice.profile.domain.model.commands.CreateProfileCommand;
+
+import com.campusmov.platform.profileservice.profile.domain.model.commands.*;
+import com.campusmov.platform.profileservice.profile.domain.model.entities.ClassSchedule;
 import com.campusmov.platform.profileservice.profile.domain.model.entities.FavoriteStop;
 import com.campusmov.platform.profileservice.profile.domain.model.valueobjects.*;
 import jakarta.persistence.*;
@@ -9,6 +11,7 @@ import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -21,7 +24,7 @@ public class Profile extends AbstractAggregateRoot<Profile> {
     private ContactInformation contactInformation;
 
     @Embedded
-    private  PersonalInformation personalInformation;
+    private PersonalInformation personalInformation;
 
     private String profilePictureUrl;
 
@@ -34,6 +37,70 @@ public class Profile extends AbstractAggregateRoot<Profile> {
 
     public Profile() {
         //Constructor por defecto para JPA
+    }
+
+    private Profile(CreateProfileCommand cmd) {
+        this.id = new UserId(cmd.userId());
+        this.contactInformation = new ContactInformation(
+                new Email(cmd.institutionalEmailAddress(), cmd.personalEmailAddress()),
+                new PhoneNumber(cmd.countryCode(), cmd.phoneNumber())
+        );
+        this.personalInformation = new PersonalInformation(
+                cmd.firstName(),
+                cmd.lastName(),
+                cmd.birthDate(),
+                EGender.valueOf(cmd.gender().toUpperCase())
+        );
+        this.profilePictureUrl = cmd.profilePictureUrl();
+        this.academicInformation = new AcademicInformation(
+                cmd.university(),
+                cmd.faculty(),
+                cmd.academicProgram(),
+                cmd.semester()
+        );
+        if (cmd.classSchedules().isPresent()) {
+            this.academicInformation.setClassSchedules(cmd.classSchedules().get());
+        }
+    }
+
+    public static Profile from(CreateProfileCommand cmd) {
+        return new Profile(cmd);
+    }
+
+    private void updateContactInformation(UpdateProfileCommand command) {
+        this.contactInformation = new ContactInformation(
+                new Email(command.institutionalEmailAddress(), command.personalEmailAddress()),
+                new PhoneNumber(command.countryCode(), command.phoneNumber())
+        );
+    }
+
+    private void updatePersonalInformation(UpdateProfileCommand command) {
+        this.personalInformation = new PersonalInformation(
+                command.firstName(),
+                command.lastName(),
+                command.birthDate(),
+                EGender.valueOf(command.gender().toUpperCase())
+        );
+    }
+
+    private void updateProfilePictureUrl(UpdateProfileCommand command) {
+        this.profilePictureUrl = command.profilePictureUrl();
+    }
+
+    private void updateAcademicInformation(UpdateProfileCommand command) {
+        this.academicInformation = new AcademicInformation(
+                command.university(),
+                command.faculty(),
+                command.academicProgram(),
+                command.semester()
+        );
+    }
+
+    public void updateProfile(UpdateProfileCommand command) {
+        this.updateContactInformation(command);
+        this.updatePersonalInformation(command);
+        this.updateProfilePictureUrl(command);
+        this.updateAcademicInformation(command);
     }
 
 }
