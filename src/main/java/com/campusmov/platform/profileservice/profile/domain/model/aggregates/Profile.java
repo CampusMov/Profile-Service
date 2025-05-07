@@ -103,4 +103,17 @@ public class Profile extends AbstractAggregateRoot<Profile> {
         this.updateAcademicInformation(command);
     }
 
+    public void addClassScheduleToAcademicInformation(CreateClassScheduleCommand command) {
+        this.academicInformation.addClassSchedule(command);
+    }
+
+    public void addFavoriteStop(CreateFavoriteStopCommand command) {
+        var favoriteStop = new FavoriteStop(command);
+        this.favoriteStops.add(favoriteStop);
+    }
+
+    public Optional<ClassSchedule> updateClassSchedule(String classScheduleId, UpdateClassScheduleCommand command) {
+        return this.academicInformation.updateClassSchedule(classScheduleId, command);
+    }
+
 }
