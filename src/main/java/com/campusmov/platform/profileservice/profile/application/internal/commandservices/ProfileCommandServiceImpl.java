@@ -64,4 +64,17 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
         return updatedClassSchedule;
     }
 
+    @Override
+    public void handle(DeleteClassScheduleCommand command) {
+        UserId userId = new UserId(command.profileId());
+        Profile profile = profileRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Profile not found"));
+
+        boolean removed = profile.removeClassScheduleByClassScheduleId(command.classScheduleId());
+        if (!removed) {
+            throw new IllegalArgumentException("Class schedule not found");
+        }
+        profileRepository.save(profile);
+    }
+
 }
