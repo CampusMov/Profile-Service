@@ -11,5 +11,5 @@ public interface ProfileCommandService {
     Optional<Profile> handle(CreateProfileCommand command);
     Optional<Profile> handle(UpdateProfileCommand command, String profileId);
     Optional<ClassSchedule> handle(CreateClassScheduleCommand command, String profileId);
-
+    Optional<ClassSchedule> handle(UpdateClassScheduleCommand command, String profileId, String classScheduleId);
 }

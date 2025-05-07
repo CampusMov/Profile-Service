@@ -53,4 +53,15 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
                 .findFirst();
     }
 
+    @Override
+    public Optional<ClassSchedule> handle(UpdateClassScheduleCommand command, String profileId, String classScheduleId) {
+        UserId userId = new UserId(profileId);
+        Profile profile = profileRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Profile not found"));
+        Optional<ClassSchedule> updatedClassSchedule = profile.updateClassSchedule(classScheduleId, command);
+        profileRepository.save(profile);
+
+        return updatedClassSchedule;
+    }
+
 }
