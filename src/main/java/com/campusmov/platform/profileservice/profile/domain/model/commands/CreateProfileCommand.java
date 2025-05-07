@@ -1,10 +1,14 @@
-package com.campusmov.platform.profileservice.profile.interfaces.rest.resources;
+package com.campusmov.platform.profileservice.profile.domain.model.commands;
+
+import com.campusmov.platform.profileservice.profile.domain.model.entities.ClassSchedule;
+import com.campusmov.platform.profileservice.profile.interfaces.rest.resources.CreateClassScheduleResource;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-public record ProfileResource(
-        String id,
+public record CreateProfileCommand(
+        String userId,
         // ContactInformation
         String institutionalEmailAddress,
         String personalEmailAddress,
@@ -15,14 +19,14 @@ public record ProfileResource(
         String lastName,
         LocalDate birthDate,
         String gender,
-
+        // Perfil
         String profilePictureUrl,
-
         // AcademicInformation
         String university,
         String faculty,
         String academicProgram,
         String semester,
-        // ClassSchedule
-        List<ClassScheduleResource> classSchedules
-) {}
+        Optional<List<ClassSchedule>> classSchedules
+) {
+}
+

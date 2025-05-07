@@ -1,11 +1,8 @@
-package com.campusmov.platform.profileservice.profile.interfaces.rest.resources;
+package com.campusmov.platform.profileservice.profile.domain.model.commands;
 
 import java.time.LocalDate;
-import java.util.List;
 
-public record ProfileResource(
-        String id,
-        // ContactInformation
+public record UpdateProfileCommand(
         String institutionalEmailAddress,
         String personalEmailAddress,
         String countryCode,
@@ -15,14 +12,12 @@ public record ProfileResource(
         String lastName,
         LocalDate birthDate,
         String gender,
-
+        // Perfil
         String profilePictureUrl,
-
         // AcademicInformation
         String university,
         String faculty,
         String academicProgram,
-        String semester,
-        // ClassSchedule
-        List<ClassScheduleResource> classSchedules
-) {}
+        String semester
+) {
+}

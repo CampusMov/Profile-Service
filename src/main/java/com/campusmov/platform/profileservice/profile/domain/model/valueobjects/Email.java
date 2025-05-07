@@ -3,12 +3,15 @@ import jakarta.persistence.Embeddable;
 
 @Embeddable
 public record Email(
-        String emailAddress,
-        boolean isVerified
+        String institutionalEmailAddress,
+        String personalEmailAddress
 ) {
     public Email {
-        if (emailAddress == null || emailAddress.isBlank()) {
-            throw new IllegalArgumentException("Email address is required");
+        if (institutionalEmailAddress == null || institutionalEmailAddress.isBlank()) {
+            throw new IllegalArgumentException("Institutional email address cannot be null or blank");
+        }
+        if (personalEmailAddress == null || personalEmailAddress.isBlank()) {
+            throw new IllegalArgumentException("Personal email address cannot be null or blank");
         }
     }
 }

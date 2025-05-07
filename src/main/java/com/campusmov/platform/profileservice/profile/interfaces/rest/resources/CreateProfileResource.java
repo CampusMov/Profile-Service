@@ -1,28 +1,23 @@
 package com.campusmov.platform.profileservice.profile.interfaces.rest.resources;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-public record ProfileResource(
-        String id,
-        // ContactInformation
+public record CreateProfileResource(
+        String userId,
         String institutionalEmailAddress,
         String personalEmailAddress,
         String countryCode,
         String phoneNumber,
-        // PersonalInformation
         String firstName,
         String lastName,
-        LocalDate birthDate,
+        String birthDate,
         String gender,
-
         String profilePictureUrl,
-
-        // AcademicInformation
         String university,
         String faculty,
         String academicProgram,
         String semester,
-        // ClassSchedule
-        List<ClassScheduleResource> classSchedules
-) {}
+        Optional<List<CreateClassScheduleResource>> classSchedules
+) {
+}
