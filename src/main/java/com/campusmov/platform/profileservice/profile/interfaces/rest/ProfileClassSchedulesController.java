@@ -56,4 +56,12 @@ public class ProfileClassSchedulesController {
         var classScheduleResourceResponse = ClassScheduleResourceFromEntityAssembler.toResource(classSchedule.get());
         return ResponseEntity.status(HttpStatus.OK).body(classScheduleResourceResponse);
     }
+
+    @DeleteMapping("/{scheduleId}")
+    @Operation(summary = "Delete a class schedule")
+    public ResponseEntity<Void> deleteClassSchedule(@PathVariable String id, @PathVariable String scheduleId) {
+        var deleteClassScheduleCommand = DeleteClassScheduleCommandFromPathVariablesAssembler.toCommand(scheduleId, id);
+        profileCommandService.handle(deleteClassScheduleCommand);
+        return ResponseEntity.noContent().build();
+    }
 }
