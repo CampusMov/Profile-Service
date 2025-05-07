@@ -40,4 +40,17 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
         return Optional.of(profile);
     }
 
+    @Override
+    public Optional<ClassSchedule> handle(CreateClassScheduleCommand command, String profileId) {
+        UserId userId = new UserId(profileId);
+        Profile profile = profileRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Profile not found"));
+        profile.addClassScheduleToAcademicInformation(command);
+        profileRepository.save(profile);
+        return profile.getAcademicInformation().getClassSchedules()
+                .stream()
+                .filter(classSchedule -> classSchedule.getCourseName().equals(command.courseName()))
+                .findFirst();
+    }
+
 }
