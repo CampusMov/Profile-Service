@@ -1,6 +1,6 @@
 package com.campusmov.platform.profileservice.profile.interfaces.rest.resources;
 
-public record CreateFavoriteStopResource(
+public record UpdateFavoriteStopResource(
         String name,
         String description,
         String locationName,
@@ -8,5 +8,4 @@ public record CreateFavoriteStopResource(
         double locationLongitude,
         String address
 ) {
-
 }

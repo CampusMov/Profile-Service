@@ -1,5 +1,8 @@
 package com.campusmov.platform.profileservice.profile.domain.model.entities;
 
+import com.campusmov.platform.profileservice.profile.domain.model.commands.CreateFavoriteStopCommand;
+import com.campusmov.platform.profileservice.profile.domain.model.commands.UpdateFavoriteStopCommand;
+import com.campusmov.platform.profileservice.profile.domain.model.valueobjects.Coordinates;
 import com.campusmov.platform.profileservice.profile.domain.model.valueobjects.Location;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -19,6 +22,9 @@ public class FavoriteStop {
     @Column(name = "stop_name")
     private String name;
 
+    @NotNull
+    private String description;
+
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "latitude", column = @Column(name = "location_latitude")),
@@ -27,39 +33,44 @@ public class FavoriteStop {
     })
     private Location location;
 
-    @NotNull
-    @Column(name = "stop_address")
-    private String address;
-
-    @NotNull
-    private String description;
-
     protected FavoriteStop() {
         // JPA
     }
 
-    public FavoriteStop(String id,
-                        String name,
-                        Location location,
-                        String address,
-                        String description) {
-        if (name == null || name.isBlank()) {
+    public FavoriteStop(CreateFavoriteStopCommand command) {
+        if (command.name() == null || command.name().isBlank()) {
             throw new IllegalArgumentException("Name cannot be null or blank");
         }
-        if (location == null) {
-            throw new IllegalArgumentException("Location cannot be null");
-        }
-        if (address == null || address.isBlank()) {
-            throw new IllegalArgumentException("Address cannot be null or blank");
-        }
-        if (description == null || description.isBlank()) {
+        if (command.description() == null || command.description().isBlank()) {
             throw new IllegalArgumentException("Description cannot be null or blank");
         }
 
-        this.id = id;
-        this.name = name;
-        this.location = location;
-        this.address = address;
-        this.description = description;
+        this.name = command.name();
+        this.description = command.description();
+        this.location = new Location(
+                command.locationName(),
+                new Coordinates(command.locationLatitude(), command.locationLongitude()),
+                command.address()
+        );
+    }
+
+    public void updateFavoriteStopInfo(UpdateFavoriteStopCommand command) {
+        if (command.name() != null && !command.name().isBlank()) {
+            this.name = command.name();
+        }
+        if (command.description() != null && !command.description().isBlank()) {
+            this.description = command.description();
+        }
+        if (command.locationName() != null && !command.locationName().isBlank()) {
+            this.location = new Location(
+                    command.locationName(),
+                    new Coordinates(command.locationLatitude(), command.locationLongitude()),
+                    command.address()
+            );
+        }
+    }
+
+    public boolean removeFavoriteStopByFavoriteStopId(String favoriteStopId) {
+        return this.id.equals(favoriteStopId);
     }
 }

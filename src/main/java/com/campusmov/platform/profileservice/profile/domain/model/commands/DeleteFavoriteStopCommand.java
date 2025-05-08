@@ -1,12 +1,12 @@
 package com.campusmov.platform.profileservice.profile.domain.model.commands;
 
-public record DeleteClassScheduleCommand(
-        String classScheduleId,
+public record DeleteFavoriteStopCommand(
+        String favoriteStopId,
         String profileId
 ) {
-    public DeleteClassScheduleCommand {
-        if (classScheduleId == null || classScheduleId.isBlank()) {
-            throw new IllegalArgumentException("Class schedule ID cannot be null or blank");
+    public DeleteFavoriteStopCommand {
+        if (favoriteStopId == null || favoriteStopId.isBlank()) {
+            throw new IllegalArgumentException("Favorite stop ID cannot be null or blank");
         }
         if (profileId == null || profileId.isBlank()) {
             throw new IllegalArgumentException("Profile ID cannot be null or blank");
