@@ -37,4 +37,14 @@ public class ProfileFavoriteStopsController {
         return ResponseEntity.ok(favoriteStops);
     }
 
+    @PostMapping
+    @Operation(summary = "Add a favorite stop to a profile")
+    public ResponseEntity<FavoriteStopResource> addFavoriteStop(@PathVariable String id, @RequestBody CreateFavoriteStopResource createFavoriteStopResource) {
+        var createFavoriteStopCommand = CreateFavoriteStopCommandFromResourceAssembler.toCommand(createFavoriteStopResource);
+        var favoriteStop = profileCommandService.handle(createFavoriteStopCommand, id);
+        if (favoriteStop.isEmpty()) return ResponseEntity.badRequest().build();
+        var favoriteStopResourceResponse = FavoriteStopResourceFromEntityAssembler.toResource(favoriteStop.get());
+        return ResponseEntity.status(HttpStatus.CREATED).body(favoriteStopResourceResponse);
+    }
+
 }
