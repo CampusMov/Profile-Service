@@ -47,4 +47,21 @@ public class ProfileFavoriteStopsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(favoriteStopResourceResponse);
     }
 
+    @PutMapping("/{stopId}")
+    @Operation(summary = "Update a favorite stop")
+    public ResponseEntity<FavoriteStopResource> updateFavoriteStop(@PathVariable String id, @PathVariable String stopId, @RequestBody UpdateFavoriteStopResource updateFavoriteStopResource) {
+        var updateFavoriteStopCommand = UpdateFavoriteStopCommandFromResourceAssembler.toCommand(updateFavoriteStopResource);
+        var favoriteStop = profileCommandService.handle(updateFavoriteStopCommand, id, stopId);
+        if (favoriteStop.isEmpty()) return ResponseEntity.badRequest().build();
+        var favoriteStopResourceResponse = FavoriteStopResourceFromEntityAssembler.toResource(favoriteStop.get());
+        return ResponseEntity.status(HttpStatus.OK).body(favoriteStopResourceResponse);
+    }
+
+    @DeleteMapping("/{stopId}")
+    @Operation(summary = "Delete a favorite stop")
+    public ResponseEntity<Void> deleteFavoriteStop(@PathVariable String id, @PathVariable String stopId) {
+        var deleteClassScheduleCommand = DeleteFavoriteStopCommandFromPathVariablesAssembler.toCommand(id, stopId);
+        profileCommandService.handle(deleteClassScheduleCommand);
+        return ResponseEntity.noContent().build();
+    }
 }
