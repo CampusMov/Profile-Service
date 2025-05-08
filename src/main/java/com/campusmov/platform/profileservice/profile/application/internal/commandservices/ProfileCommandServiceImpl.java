@@ -54,6 +54,19 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
     }
 
     @Override
+    public Optional<FavoriteStop> handle(CreateFavoriteStopCommand command, String profileId) {
+        UserId userId = new UserId(profileId);
+        Profile profile = profileRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Profile not found"));
+        profile.addFavoriteStop(command);
+        profileRepository.save(profile);
+        return profile.getFavoriteStops()
+                .stream()
+                .filter(favoriteStop -> favoriteStop.getName().equals(command.name()))
+                .findFirst();
+    }
+
+    @Override
     public Optional<ClassSchedule> handle(UpdateClassScheduleCommand command, String profileId, String classScheduleId) {
         UserId userId = new UserId(profileId);
         Profile profile = profileRepository.findById(userId)
@@ -65,6 +78,17 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
     }
 
     @Override
+    public Optional<FavoriteStop> handle(UpdateFavoriteStopCommand command, String profileId, String favoriteStopId) {
+        UserId userId = new UserId(profileId);
+        Profile profile = profileRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Profile not found"));
+        Optional<FavoriteStop> updatedFavoriteStop = profile.updateFavoriteStop(favoriteStopId, command);
+        profileRepository.save(profile);
+
+        return updatedFavoriteStop;
+    }
+
+    @Override
     public void handle(DeleteClassScheduleCommand command) {
         UserId userId = new UserId(command.profileId());
         Profile profile = profileRepository.findById(userId)
@@ -73,6 +97,19 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
         boolean removed = profile.removeClassScheduleByClassScheduleId(command.classScheduleId());
         if (!removed) {
             throw new IllegalArgumentException("Class schedule not found");
+        }
+        profileRepository.save(profile);
+    }
+
+    @Override
+    public void handle(DeleteFavoriteStopCommand command) {
+        UserId userId = new UserId(command.profileId());
+        Profile profile = profileRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Profile not found"));
+
+        boolean removed = profile.removeFavoriteStopByFavoriteStopId(command.favoriteStopId());
+        if (!removed) {
+            throw new IllegalArgumentException("Favorite stop not found");
         }
         profileRepository.save(profile);
     }

@@ -116,7 +116,21 @@ public class Profile extends AbstractAggregateRoot<Profile> {
         return this.academicInformation.updateClassSchedule(classScheduleId, command);
     }
 
+    public Optional<FavoriteStop> updateFavoriteStop(String favoriteStopId, UpdateFavoriteStopCommand command) {
+        return this.favoriteStops.stream()
+                .filter(favoriteStop -> favoriteStop.getId().equals(favoriteStopId))
+                .findFirst()
+                .map(favoriteStop -> {
+                    favoriteStop.updateFavoriteStopInfo(command);
+                    return favoriteStop;
+                });
+    }
+
     public boolean removeClassScheduleByClassScheduleId(String classScheduleId) {
         return this.academicInformation.removeClassScheduleByClassScheduleId(classScheduleId);
+    }
+
+    public boolean removeFavoriteStopByFavoriteStopId(String favoriteStopId) {
+        return this.favoriteStops.removeIf(favoriteStop -> favoriteStop.removeFavoriteStopByFavoriteStopId(favoriteStopId));
     }
 }

@@ -17,7 +17,6 @@ import java.util.Optional;
 @Service
 public class ProfileQueryServiceImpl implements ProfileQueryService {
     private final ProfileRepository profileRepository;
-
     public ProfileQueryServiceImpl(ProfileRepository profileRepository) {
         this.profileRepository = profileRepository;
     }
@@ -36,4 +35,11 @@ public class ProfileQueryServiceImpl implements ProfileQueryService {
                 .map(profile -> profile.getAcademicInformation().getClassSchedules());
     }
 
+    @Override
+    public Optional<List<FavoriteStop>> handle(GetFavoriteStopsByProfileIdQuery query) {
+        UserId userId = new UserId(query.profileId());
+
+        return profileRepository.findById(userId)
+                .map(Profile::getFavoriteStops);
+    }
 }
