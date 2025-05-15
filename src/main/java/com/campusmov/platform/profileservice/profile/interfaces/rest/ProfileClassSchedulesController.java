@@ -1,5 +1,6 @@
 package com.campusmov.platform.profileservice.profile.interfaces.rest;
 
+import com.campusmov.platform.profileservice.profile.domain.model.queries.GetAllClassSchedulesByCourseNameAndProfileId;
 import com.campusmov.platform.profileservice.profile.domain.model.queries.GetProfileByIdQuery;
 import com.campusmov.platform.profileservice.profile.domain.services.ProfileCommandService;
 import com.campusmov.platform.profileservice.profile.domain.services.ProfileQueryService;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/profiles/{id}/class-schedules")
+@RequestMapping("/profiles/{id}/class-schedules")
 @Tag(name = "Profiles Class Schedules", description = "Available Profile Class Schedules Endpoints")
 public class ProfileClassSchedulesController {
     private final ProfileQueryService profileQueryService;
@@ -35,6 +36,15 @@ public class ProfileClassSchedulesController {
         if (profile.isEmpty()) return ResponseEntity.notFound().build();
         var classSchedules = ClassSchedulesFromValueObjectListAssembler.toResources(profile.get().getAcademicInformation().getClassSchedules());
         return ResponseEntity.ok(classSchedules);
+    }
+    @GetMapping("/{courseName}")
+    @Operation(summary = "Get class schedules by course name and profile ID")
+    public ResponseEntity<List<ClassScheduleResource>> getClassSchedulesByCourseNameAndProfileId(@PathVariable String id, @PathVariable String courseName) {
+        var getAllClassSchedulesByCourseNameAndProfileId = new GetAllClassSchedulesByCourseNameAndProfileId(courseName, id);
+        var classSchedules = profileQueryService.handle(getAllClassSchedulesByCourseNameAndProfileId);
+        if (classSchedules.isEmpty()) return ResponseEntity.notFound().build();
+        var classScheduleResources = ClassSchedulesFromValueObjectListAssembler.toResources(classSchedules.get());
+        return ResponseEntity.ok(classScheduleResources);
     }
 
     @PostMapping

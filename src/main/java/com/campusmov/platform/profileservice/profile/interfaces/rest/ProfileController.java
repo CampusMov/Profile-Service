@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/profiles")
+@RequestMapping("/profiles")
 @Tag(name = "Profiles", description = "Available Profile Endpoints")
 public class ProfileController {
     private final ProfileQueryService profileQueryService;
