@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/profiles/{id}/favorite-stops")
+@RequestMapping("profiles/{id}/favorite-stops")
 @Tag(name = "Profiles Favorite Stops", description = "Available Profile Favorite Stops Endpoints")
 public class ProfileFavoriteStopsController {
     private final ProfileQueryService profileQueryService;

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/profiles/{id}/class-schedules")
+@RequestMapping("/profiles/{id}/class-schedules")
 @Tag(name = "Profiles Class Schedules", description = "Available Profile Class Schedules Endpoints")
 public class ProfileClassSchedulesController {
     private final ProfileQueryService profileQueryService;
