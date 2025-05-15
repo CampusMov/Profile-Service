@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.campusmov.platform</groupId>
-    <artifactId>ProfileService</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>ProfileService</name>
-    <description>ProfileService</description>
+    <artifactId>profile-service</artifactId>
+    <version>1.1.0</version>
+    <name>profile-service</name>
+    <description>profile-service</description>
     <url/>
     <licenses>
         <license/>
@@ -27,8 +27,9 @@
         <url/>
     </scm>
     <properties>
-        <java.version>22</java.version>
+        <java.version>21</java.version>
         <spring-cloud.version>2024.0.1</spring-cloud.version>
+        <dockerPassword>dockerPassword</dockerPassword>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -118,6 +119,21 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <image>
+                        <builder>paketobuildpacks/builder-jammy-java-tiny:latest</builder>
+                        <name>jhosepmyr/${project.artifactId}:${project.version}</name>
+                        <publish>true</publish>
+                        <env>
+                            <BP_JVM_VERSION>21</BP_JVM_VERSION>
+                            <BP_JVM_TYPE>JDK</BP_JVM_TYPE>
+                        </env>
+                    </image>
+                    <docker>
+                        <publishRegistry>
+                            <username>jhosepmyr</username>
+                            <password>${dockerPassword}</password>
+                        </publishRegistry>
+                    </docker>
                 </configuration>
             </plugin>
         </plugins>
