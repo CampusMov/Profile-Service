@@ -11,6 +11,9 @@ public interface ProfileCommandService {
     Optional<Profile> handle(CreateProfileCommand command);
     Optional<Profile> handle(UpdateProfileCommand command, String profileId);
     Optional<ClassSchedule> handle(CreateClassScheduleCommand command, String profileId);
+    Optional<FavoriteStop> handle(CreateFavoriteStopCommand command, String profileId);
     Optional<ClassSchedule> handle(UpdateClassScheduleCommand command, String profileId, String classScheduleId);
+    Optional<FavoriteStop> handle(UpdateFavoriteStopCommand command, String profileId, String favoriteStopId);
     void handle(DeleteClassScheduleCommand command);
+    void handle(DeleteFavoriteStopCommand command);
 }

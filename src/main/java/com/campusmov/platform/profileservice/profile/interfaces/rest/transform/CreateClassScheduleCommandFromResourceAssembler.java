@@ -11,8 +11,8 @@ public class CreateClassScheduleCommandFromResourceAssembler {
         return new CreateClassScheduleCommand(
                 resource.courseName(),
                 resource.locationName(),
-                resource.latitude(),
-                resource.longitude(),
+                19202,
+                33823,
                 resource.address(),
                 resource.startedAt(),
                 resource.endedAt(),
