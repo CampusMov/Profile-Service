@@ -12,8 +12,6 @@ public class ClassScheduleResourceFromEntityAssembler {
                 classSchedule.getId(),
                 classSchedule.getCourseName(),
                 classSchedule.getLocation().name(),
-                classSchedule.getLocation().coordinates().latitude(),
-                classSchedule.getLocation().coordinates().longitude(),
                 classSchedule.getLocation().address(),
                 classSchedule.getStartedAt(),
                 classSchedule.getEndedAt(),
