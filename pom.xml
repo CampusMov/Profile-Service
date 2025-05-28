@@ -121,7 +121,7 @@
                     </excludes>
                     <image>
                         <builder>paketobuildpacks/builder-jammy-java-tiny:latest</builder>
-                        <name>jhosepmyr/${project.artifactId}:${project.version}</name>
+                        <name>jhosepmyr/uni-ride_${project.artifactId}:${project.version}</name>
                         <publish>true</publish>
                         <env>
                             <BP_JVM_VERSION>21</BP_JVM_VERSION>
