@@ -52,7 +52,7 @@ jobs:
         working-directory: k8s/manifests/applications
         run: |
           NEW_VERSION="${{ needs.build-and-push.outputs.version }}"
-          sed -i "s|\(image: jhosepmyr/profile-service:\).*|\1${NEW_VERSION}|" profile-service.yaml
+          sed -i "s|\(image: jhosepmyr/uni-ride_profile-service:\).*|\1${NEW_VERSION}|" profile-service.yaml
           git diff profile-service.yaml
 
       - name: Commit and push changes
