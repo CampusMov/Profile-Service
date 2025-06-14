@@ -7,6 +7,8 @@ public record ClassScheduleResource(
         String courseName,
         String locationName,
         String address,
+        double latitude,
+        double longitude,
         LocalDateTime startedAt,
         LocalDateTime endedAt,
         String selectedDay
