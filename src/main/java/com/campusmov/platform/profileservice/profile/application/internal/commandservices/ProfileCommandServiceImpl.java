@@ -21,12 +21,16 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
 
     @Override
     public Optional<Profile> handle(CreateProfileCommand command) {
-        Profile profile = Profile.from(command);
-        if (profileRepository.existsById(profile.getId())) {
-            return Optional.empty(); //Profile already exists
-        } else {
+        Profile profile = new Profile(command);
+        var existingProfile = profileRepository.findById(profile.getId());
+        if (existingProfile.isPresent()) {
+            throw new IllegalArgumentException("Profile with this ID already exists");
+        }
+        try {
             profileRepository.save(profile);
-            return Optional.of(profile); //Profile created successfully
+            return Optional.of(profile);
+        } catch (Exception e) {
+            throw new RuntimeException("Error saving profile: " + e.getMessage(), e);
         }
     }
 
@@ -36,8 +40,12 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
         Profile profile = profileRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Profile not found"));
         profile.updateProfile(command);
-        profileRepository.save(profile);
-        return Optional.of(profile);
+        try {
+            profileRepository.save(profile);
+            return Optional.of(profile);
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating profile: " + e.getMessage(), e);
+        }
     }
 
     @Override
@@ -45,12 +53,13 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
         UserId userId = new UserId(profileId);
         Profile profile = profileRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Profile not found"));
-        profile.addClassScheduleToAcademicInformation(command);
-        profileRepository.save(profile);
-        return profile.getAcademicInformation().getClassSchedules()
-                .stream()
-                .filter(classSchedule -> classSchedule.getCourseName().equals(command.courseName()))
-                .findFirst();
+        var classSchedule = profile.addClassScheduleToAcademicInformation(command);
+        try {
+            profileRepository.save(profile);
+            return Optional.of(classSchedule);
+        } catch (Exception e) {
+            throw new RuntimeException("Error saving class schedule: " + e.getMessage(), e);
+        }
     }
 
     @Override
