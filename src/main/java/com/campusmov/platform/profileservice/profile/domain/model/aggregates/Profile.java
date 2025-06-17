@@ -36,10 +36,10 @@ public class Profile extends AbstractAggregateRoot<Profile> {
     private List<FavoriteStop> favoriteStops = new ArrayList<>();
 
     public Profile() {
-        //Constructor por defecto para JPA
+        super();
     }
 
-    private Profile(CreateProfileCommand cmd) {
+    public Profile(CreateProfileCommand cmd) {
         this.id = new UserId(cmd.userId());
         this.contactInformation = new ContactInformation(
                 new Email(cmd.institutionalEmailAddress(), cmd.personalEmailAddress()),
@@ -103,8 +103,8 @@ public class Profile extends AbstractAggregateRoot<Profile> {
         this.updateAcademicInformation(command);
     }
 
-    public void addClassScheduleToAcademicInformation(CreateClassScheduleCommand command) {
-        this.academicInformation.addClassSchedule(command);
+    public ClassSchedule addClassScheduleToAcademicInformation(CreateClassScheduleCommand command) {
+        return this.academicInformation.addClassSchedule(command);
     }
 
     public void addFavoriteStop(CreateFavoriteStopCommand command) {
