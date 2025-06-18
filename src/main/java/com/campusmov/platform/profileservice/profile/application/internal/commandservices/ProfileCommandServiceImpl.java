@@ -28,6 +28,8 @@ public class ProfileCommandServiceImpl implements ProfileCommandService {
         }
         try {
             profileRepository.save(profile);
+            profile.sendProfileCreatedEvent();
+            profileRepository.save(profile);
             return Optional.of(profile);
         } catch (Exception e) {
             throw new RuntimeException("Error saving profile: " + e.getMessage(), e);
