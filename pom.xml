@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.campusmov.platform</groupId>
     <artifactId>profile-service</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <name>profile-service</name>
     <description>profile-service</description>
     <url/>
