@@ -1,13 +1,15 @@
 package com.campusmov.platform.profileservice.profile.interfaces.rest.resources;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public record CreateClassScheduleResource(
         String courseName,
         String locationName,
         String address,
-        LocalDateTime startedAt,
-        LocalDateTime endedAt,
+        Double latitude,
+        Double longitude,
+        LocalTime startedAt,
+        LocalTime endedAt,
         String selectedDay
 ) {
 }

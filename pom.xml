@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.campusmov.platform</groupId>
     <artifactId>profile-service</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <name>profile-service</name>
     <description>profile-service</description>
     <url/>
@@ -92,6 +92,19 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-test-binder</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

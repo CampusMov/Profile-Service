@@ -3,6 +3,7 @@ package com.campusmov.platform.profileservice.profile.domain.model.aggregates;
 import com.campusmov.platform.profileservice.profile.domain.model.commands.*;
 import com.campusmov.platform.profileservice.profile.domain.model.entities.ClassSchedule;
 import com.campusmov.platform.profileservice.profile.domain.model.entities.FavoriteStop;
+import com.campusmov.platform.profileservice.profile.domain.model.events.ProfileCreatedEvent;
 import com.campusmov.platform.profileservice.profile.domain.model.valueobjects.*;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -36,10 +37,10 @@ public class Profile extends AbstractAggregateRoot<Profile> {
     private List<FavoriteStop> favoriteStops = new ArrayList<>();
 
     public Profile() {
-        //Constructor por defecto para JPA
+        super();
     }
 
-    private Profile(CreateProfileCommand cmd) {
+    public Profile(CreateProfileCommand cmd) {
         this.id = new UserId(cmd.userId());
         this.contactInformation = new ContactInformation(
                 new Email(cmd.institutionalEmailAddress(), cmd.personalEmailAddress()),
@@ -103,8 +104,8 @@ public class Profile extends AbstractAggregateRoot<Profile> {
         this.updateAcademicInformation(command);
     }
 
-    public void addClassScheduleToAcademicInformation(CreateClassScheduleCommand command) {
-        this.academicInformation.addClassSchedule(command);
+    public ClassSchedule addClassScheduleToAcademicInformation(CreateClassScheduleCommand command) {
+        return this.academicInformation.addClassSchedule(command);
     }
 
     public void addFavoriteStop(CreateFavoriteStopCommand command) {
@@ -132,5 +133,26 @@ public class Profile extends AbstractAggregateRoot<Profile> {
 
     public boolean removeFavoriteStopByFavoriteStopId(String favoriteStopId) {
         return this.favoriteStops.removeIf(favoriteStop -> favoriteStop.removeFavoriteStopByFavoriteStopId(favoriteStopId));
+    }
+
+    public void sendProfileCreatedEvent() {
+        ProfileCreatedEvent event = new ProfileCreatedEvent(
+                this,
+                this.id.id(),
+                this.contactInformation.email().institutionalEmailAddress(),
+                this.contactInformation.email().personalEmailAddress(),
+                this.contactInformation.phone().countryCode(),
+                this.contactInformation.phone().number(),
+                this.personalInformation.firstName(),
+                this.personalInformation.lastName(),
+                this.personalInformation.birthDate(),
+                this.personalInformation.gender().name(),
+                this.profilePictureUrl,
+                this.academicInformation.getUniversity(),
+                this.academicInformation.getFaculty(),
+                this.academicInformation.getAcademicProgram(),
+                this.academicInformation.getSemester()
+        );
+        registerEvent(event);
     }
 }

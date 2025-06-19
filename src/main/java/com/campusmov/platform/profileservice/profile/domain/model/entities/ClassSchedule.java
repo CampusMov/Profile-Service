@@ -10,7 +10,10 @@ import com.campusmov.platform.profileservice.shared.domain.model.entities.Audita
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import org.apache.logging.log4j.util.Strings;
+
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Optional;
 
 @Entity
@@ -26,29 +29,20 @@ public class ClassSchedule extends AuditableModel {
     private Location location;
 
     @NotNull
-    private LocalDateTime startedAt;
+    private LocalTime startedAt;
 
     @NotNull
-    private LocalDateTime endedAt;
+    private LocalTime endedAt;
 
     @Enumerated(EnumType.STRING)
     private EDay selectedDay;
 
-    protected ClassSchedule() {
-        //Constructor por defecto para JPA
+    public ClassSchedule() {
+        super();
     }
 
     public ClassSchedule(CreateClassScheduleCommand command) {
-        if (command.courseName() == null || command.courseName().isBlank()) {
-            throw new IllegalArgumentException("courseName cannot be null or blank");
-        }
-        if (command.selectedDay() == null) {
-            throw new IllegalArgumentException("selectedDay cannot be null");
-        }
-        if (command.endedAt().isBefore(command.startedAt())) {
-            throw new IllegalArgumentException("endedAt cannot be before startedAt");
-        }
-        this.id = null;
+        this();
         this.courseName = command.courseName();
         this.location = new Location(
                 command.locationName(),

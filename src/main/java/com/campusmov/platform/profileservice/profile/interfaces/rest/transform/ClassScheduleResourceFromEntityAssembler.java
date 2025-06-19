@@ -13,6 +13,8 @@ public class ClassScheduleResourceFromEntityAssembler {
                 classSchedule.getCourseName(),
                 classSchedule.getLocation().name(),
                 classSchedule.getLocation().address(),
+                classSchedule.getLocation().coordinates().latitude(),
+                classSchedule.getLocation().coordinates().longitude(),
                 classSchedule.getStartedAt(),
                 classSchedule.getEndedAt(),
                 classSchedule.getSelectedDay().name()

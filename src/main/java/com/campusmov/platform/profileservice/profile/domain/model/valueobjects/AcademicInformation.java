@@ -53,15 +53,15 @@ public class AcademicInformation {
     }
 
     public AcademicInformation() {
-        //Constructor por defecto para JPA
     }
 
-    public void addClassSchedule(CreateClassScheduleCommand command) {
+    public ClassSchedule addClassSchedule(CreateClassScheduleCommand command) {
         if (command == null) {
             throw new IllegalArgumentException("Command cannot be null");
         }
         ClassSchedule classSchedule = new ClassSchedule(command);
         this.classSchedules.add(classSchedule);
+        return classSchedule;
     }
 
     public Optional<ClassSchedule> updateClassSchedule(String classScheduleId, UpdateClassScheduleCommand command) {
