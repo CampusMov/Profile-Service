@@ -1,0 +1,29 @@
+name: Testing Workflow
+on:
+  push:
+    branches:
+      - develop
+      - release/*
+      - feature/*
+      - hotfix/*
+  pull_request:
+    branches:
+      - develop
+      - release/*
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Integration and Unit tests
+        run: mvn test -B
