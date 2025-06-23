@@ -1,7 +1,10 @@
 package com.campusmov.platform.profileservice.profile.interfaces.rest.resources;
 
+import lombok.Builder;
+
 import java.time.LocalDate;
 
+@Builder
 public record UpdateProfileResource(
         String institutionalEmailAddress,
         String personalEmailAddress,
