@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController(value = "VehicleController")
-@RequestMapping("/api/v1/vehicle")
+@RequestMapping("/vehicles")
 @Tag(name = "Vehicle", description = "Vehicle API")
 public class VehicleController {
     private final VehicleQueryService vehicleQueryService;
