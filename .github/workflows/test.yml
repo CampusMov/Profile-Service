@@ -11,6 +11,7 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,11 +25,11 @@ jobs:
 
       - name: Integration and Unit tests
         run: mvn test -B
+        
   build-and-push:
     name: Build & Push Docker Image
     runs-on: ubuntu-latest
-    needs: test
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
+    if: github.event.action == 'closed' && github.event.pull_request.merged == true
     outputs:
       version: ${{ steps.extract-version.outputs.version }}
     steps:
