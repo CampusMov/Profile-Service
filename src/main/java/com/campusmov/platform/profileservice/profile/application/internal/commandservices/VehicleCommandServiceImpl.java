@@ -20,24 +20,27 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
     @Override
     public Optional<Vehicle> handle(CreateVehicleCommand command) {
         Vehicle vehicle = Vehicle.from(command);
-        if (vehicleRepository.existsByVehicleIdentification_Vin(vehicle.getVehicleIdentification().vin())
-                || vehicleRepository.existsByOwnerId(vehicle.getOwnerId())) {
-            return Optional.empty();
-        } else {
+        boolean vehicleWithVinExists = vehicleRepository.existsByVehicleIdentification_Vin(vehicle.getVehicleIdentification().vin());
+        boolean vehicleWithOwnerIdExists = vehicleRepository.existsByOwnerId(vehicle.getOwnerId());
+        if (vehicleWithVinExists) throw new IllegalArgumentException("Vehicle with VIN already exists.");
+        if (vehicleWithOwnerIdExists) throw new IllegalArgumentException("Vehicle with this owner already exists.");
+        try {
             vehicleRepository.save(vehicle);
             return Optional.of(vehicle);
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
         }
-
     }
 
     @Override
     public Optional<String> handle(ChangeVehicleStatusCommand command, String vehicleId) {
         Optional<Vehicle> vehicle = vehicleRepository.findById(vehicleId);
-        if (vehicle.isPresent()) {
-            vehicle.get().changeStatus(command.vehicleStatus());
+        if (vehicle.isEmpty()) throw new IllegalArgumentException("Vehicle not found with ID: " + vehicleId);
+        vehicle.get().changeStatus(command.vehicleStatus());
+        try {
             vehicleRepository.save(vehicle.get());
             return Optional.of(vehicle.get().getStatus().name());
-        } else {
+        } catch (IllegalArgumentException e) {
             return Optional.empty();
         }
     }
