@@ -10,17 +10,18 @@ import com.campusmov.platform.profileservice.shared.domain.model.entities.Audita
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import org.apache.logging.log4j.util.Strings;
-
-import java.time.LocalDateTime;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
 import java.time.LocalTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Entity
 @Getter
+@Setter
+@NoArgsConstructor
 public class ClassSchedule extends AuditableModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String courseName;
@@ -37,46 +38,53 @@ public class ClassSchedule extends AuditableModel {
     @Enumerated(EnumType.STRING)
     private EDay selectedDay;
 
-    public ClassSchedule() {
-        super();
+    public ClassSchedule(String id, String courseName, String locationName, double latitude, double longitude, String address, LocalTime startedAt, LocalTime endedAt, EDay selectedDay) {
+        this.id = id;
+        this.courseName = courseName;
+        this.location = new Location(
+                locationName,
+                new Coordinates(latitude, longitude),
+                address
+        );
+        this.startedAt = startedAt;
+        this.endedAt = endedAt;
+        this.selectedDay = selectedDay;
     }
 
     public ClassSchedule(CreateClassScheduleCommand command) {
-        this();
-        this.courseName = command.courseName();
-        this.location = new Location(
+        this(UUID.randomUUID().toString(),
+                command.courseName(),
                 command.locationName(),
-                new Coordinates(command.latitude(), command.longitude()),
-                command.address()
-        );
-        this.startedAt = command.startedAt();
-        this.endedAt = command.endedAt();
-        this.selectedDay = EDay.valueOf(command.selectedDay().toUpperCase());
+                command.latitude(),
+                command.longitude(),
+                command.address(),
+                command.startedAt(),
+                command.endedAt(),
+                EDay.valueOf(command.selectedDay().toUpperCase()));
     }
 
     public Optional<ClassSchedule> updateClassScheduleInfo(UpdateClassScheduleCommand command) {
         if (command.courseName() != null && !command.courseName().isBlank()) {
-            this.courseName = command.courseName();
+            this.setCourseName(command.courseName());
         }
         if (command.locationName() != null && !command.locationName().isBlank() &&
-                command.locationLatitude() != 0 && command.locationLongitude() != 0 &&
                 command.address() != null && !command.address().isBlank()) {
-            this.location = new Location(
+            this.setLocation(new Location(
                     command.locationName(),
                     new Coordinates(command.locationLatitude(), command.locationLongitude()),
                     command.address()
-            );
+            ));
         }
+
         if (command.startedAt() != null) {
-            this.startedAt = command.startedAt();
+            this.setStartedAt(command.startedAt());
         }
         if (command.endedAt() != null) {
-            this.endedAt = command.endedAt();
+            this.setEndedAt(command.endedAt());
         }
         if (command.selectedDay() != null) {
-            this.selectedDay = EDay.valueOf(command.selectedDay().toUpperCase());
+            this.setSelectedDay(EDay.valueOf(command.selectedDay().toUpperCase()));
         }
         return Optional.of(this);
     }
-
 }

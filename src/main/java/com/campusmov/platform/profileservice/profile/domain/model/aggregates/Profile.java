@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +39,7 @@ public class Profile extends AbstractAggregateRoot<Profile> {
 
     public Profile() {
         super();
+        this.academicInformation = new AcademicInformation();
     }
 
     public Profile(CreateProfileCommand cmd) {
@@ -60,7 +62,7 @@ public class Profile extends AbstractAggregateRoot<Profile> {
                 cmd.semester()
         );
         if (cmd.classSchedules().isPresent()) {
-            this.academicInformation.setClassSchedules(cmd.classSchedules().get());
+            this.academicInformation.updateClassSchedules(cmd.classSchedules().get());
         }
     }
 
@@ -89,11 +91,16 @@ public class Profile extends AbstractAggregateRoot<Profile> {
     }
 
     private void updateAcademicInformation(UpdateProfileCommand command) {
-        this.academicInformation = new AcademicInformation(
+        this.academicInformation.updateAcademicInformationInfo(
                 command.university(),
                 command.faculty(),
                 command.academicProgram(),
                 command.semester()
+        );
+
+        command.classSchedules().ifPresentOrElse(
+                schedules -> this.academicInformation.updateClassSchedules(schedules),
+                () -> this.academicInformation.updateClassSchedules(new ArrayList<>())
         );
     }
 

@@ -2,6 +2,8 @@ package com.campusmov.platform.profileservice.profile.domain.model.valueobjects;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
+import lombok.Getter;
+import lombok.Setter;
 
 @Embeddable
 public record ContactInformation(

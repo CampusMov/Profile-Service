@@ -7,14 +7,17 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Embeddable
 @Getter
 @Setter
+@NoArgsConstructor
 public class AcademicInformation {
 
     @NotNull
@@ -52,7 +55,58 @@ public class AcademicInformation {
         this.semester = semester;
     }
 
-    public AcademicInformation() {
+    public void updateAcademicInformationInfo(String university, String faculty, String academicProgram, String semester) {
+        if (university == null || university.isBlank()) {
+            throw new IllegalArgumentException("University cannot be null or blank");
+        }
+        if (faculty == null || faculty.isBlank()) {
+            throw new IllegalArgumentException("Faculty cannot be null or blank");
+        }
+        if (academicProgram == null || academicProgram.isBlank()) {
+            throw new IllegalArgumentException("Academic program cannot be null or blank");
+        }
+        if (semester == null || semester.isBlank()) {
+            throw new IllegalArgumentException("Semester cannot be null or blank");
+        }
+        this.setUniversity(university);
+        this.setFaculty(faculty);
+        this.setAcademicProgram(academicProgram);
+        this.setSemester(semester);
+    }
+
+    public void updateClassSchedules(List<ClassSchedule> incomingSchedules) {
+        if (incomingSchedules == null) {
+            this.classSchedules.clear();
+            return;
+        }
+
+        List<ClassSchedule> schedulesToRemove = this.classSchedules.stream()
+                .filter(current -> incomingSchedules.stream().noneMatch(inc -> inc.getId().equals(current.getId())))
+                .collect(Collectors.toList());
+        this.classSchedules.removeAll(schedulesToRemove);
+
+        incomingSchedules.forEach(incoming -> {
+            Optional<ClassSchedule> existing = this.classSchedules.stream()
+                    .filter(current -> current.getId().equals(incoming.getId()))
+                    .findFirst();
+
+            if (existing.isPresent()) {
+                existing.get().updateClassScheduleInfo(
+                        new UpdateClassScheduleCommand(
+                                incoming.getCourseName(),
+                                incoming.getLocation().name(),
+                                incoming.getLocation().coordinates().latitude(),
+                                incoming.getLocation().coordinates().longitude(),
+                                incoming.getLocation().address(),
+                                incoming.getStartedAt(),
+                                incoming.getEndedAt(),
+                                incoming.getSelectedDay().toString()
+                        )
+                );
+            } else {
+                this.classSchedules.add(incoming);
+            }
+        });
     }
 
     public ClassSchedule addClassSchedule(CreateClassScheduleCommand command) {
