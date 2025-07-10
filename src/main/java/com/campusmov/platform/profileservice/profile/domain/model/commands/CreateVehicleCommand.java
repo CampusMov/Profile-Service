@@ -1,7 +1,8 @@
 package com.campusmov.platform.profileservice.profile.domain.model.commands;
 
-import java.sql.Date;
+import lombok.Builder;
 
+@Builder
 public record CreateVehicleCommand(
         String brand, String model, Integer year,
         String status, String vin, String licensePlate,
